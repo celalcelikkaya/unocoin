@@ -455,6 +455,10 @@ main#top:before{content:"";position:absolute;left:0;right:0;top:0;height:900px;z
 .proof-row .proof-cell:nth-child(n+3){border-top:1px solid var(--line)}
 .proof-row .badge-slot{justify-content:center;align-items:center;padding:0 4px}
 @media(max-width:900px){.proof-row{flex-direction:column}.proof-row .badge-slot{justify-content:flex-start;padding:0}}
+
+/* hide page scrollbar (scrolling still works) */
+html{scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 </style>
 </head>
 <body>
