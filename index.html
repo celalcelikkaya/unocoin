@@ -518,8 +518,8 @@ body{overflow-x:visible;overscroll-behavior:auto}
   <section class="proof wrap" aria-label="UNO in numbers">
     <div class="proof-row">
     <div class="proof-grid">
-      <div class="proof-cell"><strong class="pn" data-count="38">38</strong><span>Votes on Coinvote</span></div>
-      <div class="proof-cell"><strong class="pn" data-count="4">4</strong><span>Arena rounds won</span></div>
+      <div class="proof-cell"><strong class="pn" id="liveVotes" data-count="38">38</strong><span>Votes on Coinvote</span></div>
+      <a class="proof-cell link" href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer"><strong class="pn">TELEGRAM ↗</strong><span>Join the community</span></a>
       <div class="proof-cell"><strong class="pn">OCT 30</strong><span>Launched on Solana, 2026</span></div>
       <a class="proof-cell link" href="https://solscan.io/token/45BgkY25kiHzjzVc4ztcpHDEF9ipf7rvZGySQwwPpump" target="_blank" rel="noopener noreferrer"><strong class="pn">SOLSCAN ↗</strong><span>Check the contract yourself</span></a>
     </div>
@@ -528,7 +528,7 @@ body{overflow-x:visible;overscroll-behavior:auto}
         <script async src="https://coinvote.cc/api/badge_embed.php?id=37541"></script>
       </div>
     </div>
-    <p class="proof-note">Figures from <a href="https://coinvote.cc/coin/UNO" target="_blank" rel="noopener noreferrer">Coinvote</a> as of Nov 1, 2026. They change, so treat this as a snapshot, not a promise.</p>
+    <p class="proof-note">Source: <a href="https://coinvote.cc/coin/UNO" target="_blank" rel="noopener noreferrer">Coinvote</a>. The vote count refreshes when the page loads.</p>
   </section>
 
   <section id="story" class="wrap">
@@ -965,7 +965,7 @@ loadRemoteArt();
       io.unobserve(el);
       (function tick(t){
         var p=Math.min(1,(t-t0)/dur),eased=1-Math.pow(1-p,3);
-        el.textContent=Math.round(end*eased);
+        el.textContent=Math.round((parseInt(el.dataset.count,10)||end)*eased);
         if(p<1)requestAnimationFrame(tick);
       })(t0);
     });
@@ -977,6 +977,28 @@ loadRemoteArt();
   // stop pinch / gesture zoom (iOS ignores user-scalable=no)
   ['gesturestart','gesturechange','gestureend'].forEach(function(t){document.addEventListener(t,function(e){e.preventDefault();},{passive:false});});
   document.addEventListener('touchmove',function(e){if(e.touches&&e.touches.length>1&&(e.scale===undefined||e.scale!==1))e.preventDefault();},{passive:false});
+})();
+
+(function(){
+  // best effort: read the live vote count from the Coinvote badge (open shadow DOM); falls back to the static number
+  var el=document.getElementById('liveVotes');if(!el)return;
+  var tries=0,t=setInterval(function(){
+    tries++;
+    var h=document.querySelector('.coinvote-badge-host'),sr=h&&h.shadowRoot,found=null;
+    if(sr){
+      sr.querySelectorAll('.cap').forEach(function(c){
+        if(/^votes$/i.test(c.textContent.trim())){
+          var a=c.nextElementSibling,b=c.previousElementSibling;
+          if(a&&/num/.test(a.className))found=a;else if(b&&/num/.test(b.className))found=b;
+        }
+      });
+      if(found){
+        var n=parseInt(found.textContent.replace(/[^0-9]/g,''),10);
+        if(n>0){el.dataset.count=n;el.textContent=n;clearInterval(t);return;}
+      }
+    }
+    if(tries>40)clearInterval(t);
+  },500);
 })();
 </script>
 </body>
