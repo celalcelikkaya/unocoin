@@ -480,6 +480,33 @@ img{max-width:100%}
 /* scroll fix: body must not become its own scroll container */
 html{overflow-x:hidden;overflow-x:clip;overflow-y:auto}
 body{overflow-x:visible;overscroll-behavior:auto}
+
+/* taller chart now that the trade table is off */
+.chart-box.has-chart{height:640px}
+@media(max-width:800px){.chart-box.has-chart{height:500px}}
+
+/* chart controls */
+.chart-controls{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.ctl{display:flex;align-items:center;gap:12px}
+.ctl-label{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);background:#0b0b0b}
+.seg button{font-family:var(--body);padding:11px 18px;background:transparent;color:var(--muted);border:0;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .2s ease,color .2s ease}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--red);color:#fff}
+.seg button:not([aria-pressed="true"]):hover{color:#fff}
+.tgl{font-family:var(--body);display:inline-flex;align-items:center;gap:10px;padding:9px 14px 9px 10px;background:#0b0b0b;border:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:color .2s ease,border-color .2s ease}
+.tgl .knob{position:relative;width:34px;height:18px;border-radius:999px;background:#2a2a2a;transition:background .2s ease;flex:0 0 auto}
+.tgl .knob:after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s ease}
+.tgl[aria-pressed="true"]{color:#fff;border-color:rgba(242,29,43,.6)}
+.tgl[aria-pressed="true"] .knob{background:var(--red)}
+.tgl[aria-pressed="true"] .knob:after{transform:translateX(16px)}
+.chart-box iframe{transition:opacity .25s ease}
+.chart-box.loading iframe{opacity:.3}
+.chart-box.has-chart.with-trades{height:780px}
+@media(max-width:800px){.chart-box.has-chart.with-trades{height:680px}.chart-controls{flex-direction:column;align-items:flex-start}}
+
+.chart-controls{justify-content:flex-end}
+@media(max-width:800px){.chart-controls{flex-direction:row;justify-content:flex-start}}
 </style>
 </head>
 <body>
@@ -624,7 +651,7 @@ body{overflow-x:visible;overscroll-behavior:auto}
         </div>
       </div>
       <div class="chart-box has-chart">
-        <iframe id="dextools-widget" title="UNO live trading chart (DEXTools)" loading="lazy" src="https://www.dextools.io/widget-chart/en/solana/pe-light/45BgkY25kiHzjzVc4ztcpHDEF9ipf7rvZGySQwwPpump?theme=dark&amp;chartType=1&amp;chartResolution=1&amp;drawingToolbars=false&amp;showTradeHistory=true&amp;chartInUsd=true&amp;headerColor=0d0d0d&amp;tvPlatformColor=0d0d0d&amp;tvPaneColor=0d0d0d&amp;tradeHistoryColor=0d0d0d"></iframe>
+        <iframe id="dextools-widget" title="UNO live trading chart (DEXTools)" loading="lazy" src="https://www.dextools.io/widget-chart/en/solana/pe-light/45BgkY25kiHzjzVc4ztcpHDEF9ipf7rvZGySQwwPpump?theme=dark&amp;chartType=1&amp;chartResolution=1&amp;drawingToolbars=false&amp;showTradeHistory=false&amp;chartInUsd=true&amp;headerColor=0d0d0d&amp;tvPlatformColor=0d0d0d&amp;tvPaneColor=0d0d0d&amp;tradeHistoryColor=0d0d0d"></iframe>
       </div>
     </div>
   </section>
@@ -1000,6 +1027,7 @@ loadRemoteArt();
     if(tries>40)clearInterval(t);
   },500);
 })();
+
 </script>
 </body>
 </html>
