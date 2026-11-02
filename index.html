@@ -555,6 +555,76 @@ body{overflow-x:visible;overscroll-behavior:auto}
 @keyframes splat{0%{opacity:0;transform:scale(0) rotate(var(--rot,-20deg))}20%{opacity:.85}100%{opacity:.35;transform:scale(1) rotate(var(--rot,-20deg))}}
 @media (prefers-reduced-motion:reduce){.paint-in>*{opacity:1;transform:none;transition:none}.paint-in.painted::before,.paint-in.painted::after{animation:none}.paint-in::before{clip-path:none}.paint-in::after{opacity:.35;transform:none}}
 </style>
+<style>/* brush cursor with a red paint trail (desktop mouse only) */
+.brush-cursor,.brush-trail{position:fixed;left:0;top:0;pointer-events:none}
+.brush-trail{inset:0;z-index:9998}
+.brush-cursor{z-index:9999;width:40px;height:40px;opacity:0;transform-origin:3px 37px;transition:opacity .15s ease,rotate .18s ease-out,scale .15s ease-out;filter:drop-shadow(0 2px 3px rgba(0,0,0,.55));will-change:translate}
+.brush-cursor svg{display:block;width:100%;height:100%}
+.brush-cursor.hide{opacity:0!important}
+.brush-cursor.hot{scale:1.2}
+.brush-cursor.down{scale:.86}
+html.brush-on,html.brush-on *{cursor:none!important}
+html.brush-on iframe{cursor:auto!important}
+</style>
+<style>/* send your art */
+.sa{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:20px}
+.sa[hidden]{display:none}
+.sa-back{position:absolute;inset:0;background:rgba(0,0,0,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.sa-card{position:relative;width:100%;max-width:520px;max-height:92vh;overflow:auto;padding:32px;background:linear-gradient(165deg,#171717,#0d0d0d);border:1px solid var(--line);box-shadow:0 40px 100px -30px rgba(0,0,0,.9),0 0 0 1px rgba(242,29,43,.15);animation:saIn .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes saIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.sa-x{position:absolute;right:14px;top:14px;width:36px;height:36px;border:1px solid var(--line);background:transparent;color:#fff;font-size:14px;cursor:pointer}
+.sa-x:hover{border-color:var(--gold)}
+.sa-card h3{font-family:var(--display);font-weight:400;font-size:clamp(32px,6vw,44px);line-height:1;text-transform:uppercase;letter-spacing:.01em;margin:10px 0 16px}
+.sa-card p{font-size:14px;line-height:1.75;color:var(--muted);margin:0 0 16px}
+.sa-card p b{color:#fff}
+.sa-widget{min-height:48px;margin:6px 0 10px;display:flex}
+.sa-note{min-height:20px;font-size:13px;color:#ff7b84}
+.sa-alt{font-size:12px!important;color:#a09a92!important;margin:14px 0 0!important}
+.sa-alt a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+.sa-who{font-size:13px;color:var(--muted);margin-bottom:14px}
+.sa-who b{color:var(--gold)}
+.sa-link{background:none;border:0;padding:0;margin-left:8px;color:#a09a92;font:inherit;font-size:12px;text-decoration:underline;cursor:pointer}
+.sa-drop{display:flex;align-items:center;justify-content:center;min-height:170px;margin-bottom:16px;border:1px dashed #3a3a3a;background:#0b0b0b;color:var(--muted);font-size:14px;font-weight:700;text-align:center;cursor:pointer;overflow:hidden;transition:border-color .2s ease,background .2s ease}
+.sa-drop:hover,.sa-drop.over{border-color:var(--gold);background:#101010}
+.sa-drop small{display:block;margin-top:6px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#7d7871}
+.sa-drop img{display:block;width:100%;max-height:300px;object-fit:contain}
+.sa-lab{display:block;margin-bottom:8px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.sa-lab small{font-weight:600;color:#7d7871;text-transform:none;letter-spacing:0}
+.sa-card textarea{width:100%;box-sizing:border-box;resize:vertical;padding:12px 14px;background:#0b0b0b;border:1px solid var(--line);color:#fff;font:inherit;font-size:14px;line-height:1.6}
+.sa-card textarea:focus{outline:none;border-color:var(--gold)}
+.sa-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px}
+.sa-count{font-size:11px;letter-spacing:.14em;color:#7d7871}
+.sa-row .btn:disabled{opacity:.4;cursor:default}
+.sa-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.sa-ok{margin-bottom:10px}
+.sa-ok circle{stroke-dasharray:151;stroke-dashoffset:151;animation:saDraw .7s ease forwards}
+.sa-ok path{stroke-dasharray:40;stroke-dashoffset:40;animation:saDraw .5s ease .5s forwards}
+@keyframes saDraw{to{stroke-dashoffset:0}}
+@media(max-width:800px){.sa{padding:12px;align-items:end}.sa-card{padding:24px 20px;max-height:94vh}}
+@media(prefers-reduced-motion:reduce){.sa-card,.sa-ok circle,.sa-ok path{animation:none;stroke-dashoffset:0}}
+</style>
+<style>/* how-to-buy video */
+.howvid{display:grid;gap:18px;margin-bottom:6px}
+.hv-frame{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000;border:1px solid var(--line);box-shadow:0 40px 90px -45px rgba(242,29,43,.4)}
+.hv-video{display:block;width:100%;height:100%;object-fit:contain;background:#000;cursor:pointer}
+.hv-frame.paused:after{content:"";position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;background:rgba(242,29,43,.92) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M9 6.5v11l9-5.5z' fill='white'/></svg>") center/46px no-repeat;pointer-events:none;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.hv-bar{position:absolute;right:12px;bottom:12px;display:flex;gap:8px;opacity:0;transition:opacity .25s ease}
+.hv-frame:hover .hv-bar,.hv-frame:focus-within .hv-bar,.hv-frame.paused .hv-bar{opacity:1}
+@media(hover:none){.hv-bar{opacity:1}}
+.hv-btn{width:40px;height:40px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(8,8,8,.72);color:#fff;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:border-color .2s ease,background .2s ease}
+.hv-btn:hover{border-color:var(--gold);background:rgba(8,8,8,.9)}
+.hv-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.hv-cta{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.hv-cta p{flex:1;min-width:240px;margin:0;font-size:12.5px;line-height:1.7;color:#a09a92}
+.hv-text{border:1px solid var(--line);background:linear-gradient(165deg,#161616,#0d0d0d)}
+.hv-text summary{list-style:none;cursor:pointer;padding:16px 20px;font-size:13px;font-weight:700;color:var(--muted);position:relative}
+.hv-text summary::-webkit-details-marker{display:none}
+.hv-text summary:after{content:"+";position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:22px;font-weight:300;color:var(--gold);transition:transform .25s ease}
+.hv-text[open] summary:after{transform:translateY(-50%) rotate(45deg);color:var(--red)}
+.hv-text ol{margin:0;padding:0 20px 20px 42px;display:grid;gap:10px;font-size:14px;line-height:1.7;color:#cfcac2}
+.hv-text li::marker{color:var(--gold);font-weight:800}
+@media(max-width:800px){.hv-cta .btn{width:100%;text-align:center;justify-content:center}}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#story">Skip to content</a>
@@ -672,16 +742,16 @@ body{overflow-x:visible;overscroll-behavior:auto}
     <div class="gallery" id="gallery">
       <div class="gallery-head">
         <h3>Fill the next frame.</h3>
-        <p>The first frames belong to the paint. The rest are open. Post your UNO art in our Telegram group with the tag #uno and it shows up here, credited to you.</p>
+        <p>The first frames belong to the paint. The rest are open. Log in with Telegram, send your UNO art and it shows up here, credited to you. You can also post it in our Telegram group with the tag #unoart.</p>
       </div>
       <!-- To show a real piece, replace a frame's inner content with: <img src="your-image.jpg" alt="Short description"> -->
       <div class="frames">
-        <a class="frame" href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art on Telegram, frame 002"><span class="plus">+</span><span class="tiny">002 / Your art here</span></a>
-        <a class="frame" href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art on Telegram, frame 003"><span class="plus">+</span><span class="tiny">003 / Your art here</span></a>
-        <a class="frame" href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art on Telegram, frame 004"><span class="plus">+</span><span class="tiny">004 / Your art here</span></a>
-        <a class="frame" href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art on Telegram, frame 005"><span class="plus">+</span><span class="tiny">005 / Your art here</span></a>
+        <a class="frame" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 002"><span class="plus">+</span><span class="tiny">002 / Your art here</span></a>
+        <a class="frame" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 003"><span class="plus">+</span><span class="tiny">003 / Your art here</span></a>
+        <a class="frame" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 004"><span class="plus">+</span><span class="tiny">004 / Your art here</span></a>
+        <a class="frame" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 005"><span class="plus">+</span><span class="tiny">005 / Your art here</span></a>
       </div>
-      <div class="actions"><button class="btn secondary" id="moreArt" type="button" hidden>Show more</button><a class="btn primary tg" href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer"><svg class="tg-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M9.78 15.17l-.4 4.04c.58 0 .83-.25 1.13-.55l2.7-2.58 5.6 4.1c1.03.57 1.76.27 2.04-.95l3.7-17.3h0c.33-1.52-.55-2.12-1.55-1.75L1.3 9.5c-1.48.58-1.46 1.4-.26 1.77l5.55 1.73 12.9-8.14c.6-.4 1.16-.18.7.22"/></svg>Send your art ↗</a></div>
+      <div class="actions"><button class="btn secondary" id="moreArt" type="button" hidden>Show more</button><a class="btn primary tg" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer"><svg class="tg-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M9.78 15.17l-.4 4.04c.58 0 .83-.25 1.13-.55l2.7-2.58 5.6 4.1c1.03.57 1.76.27 2.04-.95l3.7-17.3h0c.33-1.52-.55-2.12-1.55-1.75L1.3 9.5c-1.48.58-1.46 1.4-.26 1.77l5.55 1.73 12.9-8.14c.6-.4 1.16-.18.7.22"/></svg>Send your art</a></div>
     </div>
   </section>
 
@@ -724,13 +794,35 @@ body{overflow-x:visible;overscroll-behavior:auto}
 
   <section id="how" class="wrap">
     <div class="section-head">
-      <div><div class="eyebrow">05 / How to get UNO</div><h2>Three steps to<br>your first UNO.</h2></div>
-      <p class="section-intro">New to Solana? Start here. If you get stuck, the Telegram group is the fastest place to ask.</p>
+      <div><div class="eyebrow">05 / How to get UNO</div><h2>Six easy steps<br>to your first UNO.</h2></div>
+      <p class="section-intro">Watch the walkthrough. It shows the whole flow on FOMO, from search to your first order. If you get stuck, the Telegram group is the fastest place to ask.</p>
     </div>
-    <div class="steps">
-      <article class="step"><div class="num">STEP 01</div><h3>Get a wallet.</h3><p>Install a Solana wallet such as Phantom or Solflare on your phone or in your browser. Write down your recovery phrase and keep it offline.</p></article>
-      <article class="step"><div class="num">STEP 02</div><h3>Add some SOL.</h3><p>Buy SOL on any exchange and send it to your wallet address. Keep a little extra to cover network fees.</p></article>
-      <article class="step"><div class="num">STEP 03</div><h3>Swap for UNO.</h3><p>Open a Solana swap, paste the contract address from this page and swap your SOL for UNO. Check that the address matches before you confirm.</p></article>
+    <div class="howvid" id="howvid">
+      <div class="hv-frame">
+        <video id="howVideo" class="hv-video" muted loop playsinline preload="none" poster="data:image/webp;base64,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" aria-label="How to buy UNO on FOMO in six steps">
+          <source src="UNO_how_to_buy.mp4" type="video/mp4">
+          <a href="UNO_how_to_buy.mp4">Watch the how-to-buy video</a>
+        </video>
+        <div class="hv-bar">
+          <button class="hv-btn" id="hvPlay" type="button" aria-label="Pause video"></button>
+          <button class="hv-btn" id="hvFull" type="button" aria-label="Full screen"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        </div>
+      </div>
+      <div class="hv-cta">
+        <a class="btn primary" href="https://fomo.family/tokens/solana/45BgkY25kiHzjzVc4ztcpHDEF9ipf7rvZGySQwwPpump?r" target="_blank" rel="noopener noreferrer">Trade UNO on FOMO ↗</a>
+        <p>FOMO is a third-party app. Always match the contract address with the one on this page before you buy. Amounts shown in the video are examples.</p>
+      </div>
+      <details class="hv-text">
+        <summary>Prefer text? Read the six steps</summary>
+        <ol>
+          <li>Paste the UNO contract address in the search.</li>
+          <li>Select UNO from the results.</li>
+          <li>Tap &ldquo;Deposit more&rdquo;.</li>
+          <li>Choose &ldquo;Crypto&rdquo;.</li>
+          <li>Copy your wallet address. Send USDC on the Solana network only.</li>
+          <li>When the funds arrive, tap &ldquo;Buy UNO&rdquo; and confirm your order.</li>
+        </ol>
+      </details>
     </div>
     <div class="actions">
       <button class="copy" type="button" data-copy><span data-copy-label>Copy contract address ↗</span></button>
@@ -863,7 +955,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false);});
 
 /* Community art.
    Automatic: paste the Google Apps Script web app URL into ART_API. New art posted in the
-   Telegram group with the tag #uno then shows up here by itself.
+   Telegram group with the tag #unoart then shows up here by itself.
    Manual (optional): add pieces to UNO_ART, newest first. Fields: src, title, by, link. */
 let ART_API='https://script.google.com/macros/s/AKfycbz8js2hMB9Ywff_NVm50_GjV2YPIGYT6vwmz2el5g-zv81VBMV3Cza4kiPEUTVjbrDm/exec';
 const UNO_ART=[
@@ -882,7 +974,7 @@ function pad3(n){return String(n).padStart(3,'0');}
 function artImg(id,w){return 'https://drive.google.com/thumbnail?id='+id+'&sz=w'+w;}
 function emptyFrame(num){
   const a=document.createElement('a');a.className='frame';a.href=ART_LINK;a.target='_blank';a.rel='noopener noreferrer';
-  a.setAttribute('aria-label','Post your art on Telegram, frame '+pad3(num));
+  a.setAttribute('aria-label','Send your art, frame '+pad3(num));a.setAttribute('data-send-art','');
   const plus=document.createElement('span');plus.className='plus';plus.textContent='+';
   const t=document.createElement('span');t.className='tiny';t.textContent=pad3(num)+' / Your art here';
   a.append(plus,t);return a;
@@ -1106,6 +1198,275 @@ loadRemoteArt();
 })();
 
 </script>
-<script>(function(){if(!("IntersectionObserver" in window))return;var els=[].slice.call(document.querySelectorAll("main section:not(.hero), main > div.wrap:not(.hero)"));els.forEach(function(e){e.classList.add("paint-in")});var io=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add("painted");io.unobserve(e.target)}})},{threshold:.15});els.forEach(function(e){io.observe(e)})})();</script>
+<script>(function(){if(!("IntersectionObserver" in window))return;var els=[].slice.call(document.querySelectorAll("main section:not(.hero):not(.manifesto), main > div.wrap:not(.hero)"));els.forEach(function(e){e.classList.add("paint-in")});var io=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add("painted");io.unobserve(e.target)}})},{threshold:.15});els.forEach(function(e){io.observe(e)})})();</script>
+<script>
+(function(){
+  if(!matchMedia('(hover:hover) and (pointer:fine)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var root=document.documentElement;
+  var brush=document.createElement('div');brush.className='brush-cursor';brush.setAttribute('aria-hidden','true');
+  brush.innerHTML='<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">'
+    +'<path d="M21.5 19.5L25.5 23.5L37 12C38.6 10.4 38.6 8.4 37 6.8L36.2 6C34.6 4.4 32.6 4.4 31 6Z" fill="#f7bd4b" stroke="#080808" stroke-width="1.2" stroke-linejoin="round"/>'
+    +'<path d="M15 22L19 26L25.5 23.5L21.5 19.5Z" fill="#d9d9d9" stroke="#080808" stroke-width="1.2" stroke-linejoin="round"/>'
+    +'<path d="M3 37C4 30 9 24 15 22L19 26C17 32 11 36 3 37Z" fill="#f21d2b" stroke="#080808" stroke-width="1.2" stroke-linejoin="round"/>'
+    +'<path d="M6 33C8 29 11 26.5 14.5 25" fill="none" stroke="#ff7b84" stroke-width="1.4" stroke-linecap="round"/></svg>';
+  var cv=document.createElement('canvas');cv.className='brush-trail';cv.setAttribute('aria-hidden','true');
+  document.body.appendChild(cv);document.body.appendChild(brush);
+  var ctx=cv.getContext('2d'),dpr=Math.min(window.devicePixelRatio||1,2),W=0,H=0;
+  function size(){W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}
+  size();addEventListener('resize',size);
+  var pts=[],dabs=[],lx=0,ly=0,have=false,brk=true,shown=false,running=false,tiltT,LIFE=650;
+  function start(){if(!running){running=true;requestAnimationFrame(frame);}}
+  function frame(now){
+    ctx.clearRect(0,0,W,H);
+    while(pts.length&&now-pts[0].t>LIFE)pts.shift();
+    while(dabs.length&&now-dabs[0].t>LIFE)dabs.shift();
+    ctx.lineCap='round';ctx.lineJoin='round';
+    for(var i=1;i<pts.length;i++){
+      var a=pts[i-1],b=pts[i];if(b.brk)continue;
+      var k=1-(now-b.t)/LIFE;if(k<=0)continue;
+      ctx.strokeStyle='rgba(242,29,43,'+(0.72*k).toFixed(3)+')';
+      ctx.lineWidth=Math.max(1,b.w*(0.3+0.7*k));
+      ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+    }
+    for(var j=0;j<dabs.length;j++){
+      var d=dabs[j],kk=1-(now-d.t)/LIFE;if(kk<=0)continue;
+      ctx.fillStyle='rgba(242,29,43,'+(0.55*kk).toFixed(3)+')';
+      ctx.beginPath();ctx.arc(d.x,d.y,d.r*(0.5+0.5*kk),0,6.2832);ctx.fill();
+    }
+    if(pts.length||dabs.length)requestAnimationFrame(frame);else running=false;
+  }
+  addEventListener('pointermove',function(e){
+    if(e.pointerType&&e.pointerType!=='mouse')return;
+    var x=e.clientX,y=e.clientY,t=e.target;
+    if(!shown){shown=true;root.classList.add('brush-on');brush.style.opacity='1';}
+    brush.style.translate=(x-3)+'px '+(y-37)+'px';
+    var onFrame=!!(t&&t.tagName==='IFRAME');
+    brush.classList.toggle('hide',onFrame);
+    brush.classList.toggle('hot',!!(t&&t.closest&&t.closest('a,button,summary,.swatch,.frame')));
+    if(onFrame){brk=true;have=false;return;}
+    var dx=have?x-lx:0,dist=have?Math.hypot(dx,y-ly):0;
+    brush.style.rotate=Math.max(-14,Math.min(14,dx*0.7))+'deg';
+    clearTimeout(tiltT);tiltT=setTimeout(function(){brush.style.rotate='0deg';},140);
+    if(have&&dist<1)return;
+    pts.push({x:x,y:y,t:performance.now(),w:Math.max(3.5,Math.min(11,12-dist*0.18)),brk:brk});
+    if(pts.length>240)pts.shift();
+    brk=false;lx=x;ly=y;have=true;start();
+  },{passive:true});
+  addEventListener('pointerdown',function(e){
+    if(e.pointerType&&e.pointerType!=='mouse')return;
+    brush.classList.add('down');
+    dabs.push({x:e.clientX,y:e.clientY,t:performance.now(),r:11});start();
+  },{passive:true});
+  addEventListener('pointerup',function(){brush.classList.remove('down');},{passive:true});
+  root.addEventListener('mouseleave',function(){brush.classList.add('hide');brk=true;have=false;});
+  root.addEventListener('mouseenter',function(){brush.classList.remove('hide');});
+})();
+</script>
+
+<div class="sa" id="sendArt" hidden>
+  <div class="sa-back" data-sa-close></div>
+  <div class="sa-card" role="dialog" aria-modal="true" aria-labelledby="saTitle">
+    <button class="sa-x" type="button" data-sa-close aria-label="Close">&#10005;</button>
+    <div class="eyebrow">Send your art</div>
+    <h3 id="saTitle">Show us your UNO.</h3>
+
+    <div class="sa-step" data-step="login">
+      <p>Log in with Telegram so we know who made it. We read your name and check that you are in the group. Nothing is posted until you press Send.</p>
+      <div class="sa-widget" id="saWidget"></div>
+      <p class="sa-note" id="saLoginNote" role="status"></p>
+      <p class="sa-alt">Prefer to do it by hand? <a href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer">Post it in the group</a> with the tag #unoart.</p>
+    </div>
+
+    <div class="sa-step" data-step="form" hidden>
+      <div class="sa-who">Signed in as <b id="saName"></b> <button class="sa-link" type="button" id="saLogout">Not you?</button></div>
+      <label class="sa-drop" for="saFile" id="saDrop"><img id="saPreview" alt="" hidden><span id="saDropText">Choose an image <small>JPG or PNG</small></span></label>
+      <input type="file" id="saFile" accept="image/jpeg,image/png,image/webp" hidden>
+      <label class="sa-lab" for="saMsg">Message <small>(optional)</small></label>
+      <textarea id="saMsg" maxlength="300" rows="3" placeholder="Tell us about it"></textarea>
+      <div class="sa-row"><span class="sa-count" id="saCount">0 / 300</span><button class="btn primary" type="button" id="saSend" disabled>Send art</button></div>
+      <p class="sa-note" id="saNote" role="status"></p>
+      <p class="sa-alt">After a quick review it goes live here and in the Telegram group, credited to you.</p>
+    </div>
+
+    <div class="sa-step" data-step="notmember" hidden>
+      <p><b>Join the group first.</b> Only members of our Telegram group can send art.</p>
+      <div class="sa-actions"><a class="btn primary" href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer">Open the group ↗</a><button class="btn secondary" type="button" id="saRetry">I joined, try again</button></div>
+    </div>
+
+    <div class="sa-step" data-step="done" hidden>
+      <div class="sa-ok" aria-hidden="true"><svg viewBox="0 0 52 52" width="64" height="64"><circle cx="26" cy="26" r="24" fill="none" stroke="#f7bd4b" stroke-width="3"/><path d="M15 27l8 8 15-17" fill="none" stroke="#f21d2b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <p><b id="saDoneTitle">Sent. Thank you!</b><br><span id="saDoneText"></span></p>
+      <div class="sa-actions"><button class="btn secondary" type="button" id="saAgain">Send another</button><button class="btn primary" type="button" data-sa-close>Close</button></div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var modal=document.getElementById('sendArt');if(!modal)return;
+  var $=function(id){return document.getElementById(id);};
+  var steps={};modal.querySelectorAll('[data-step]').forEach(function(s){steps[s.getAttribute('data-step')]=s;});
+  var API=(typeof ART_API!=='undefined'&&ART_API)?ART_API:'';
+  var user=null,b64='',opener=null,widgetOn=false,busy=false;
+  var file=$('saFile'),prev=$('saPreview'),dropText=$('saDropText'),msg=$('saMsg'),count=$('saCount'),send=$('saSend'),note=$('saNote');
+
+  function show(name){Object.keys(steps).forEach(function(k){steps[k].hidden=(k!==name);});}
+  function stored(){
+    try{var u=JSON.parse(localStorage.getItem('uno_tg')||'null');
+      if(u&&u.id&&u.hash&&u.auth_date&&Date.now()/1000-Number(u.auth_date)<82800)return u;}catch(e){}
+    return null;
+  }
+  function save(u){try{if(u)localStorage.setItem('uno_tg',JSON.stringify(u));else localStorage.removeItem('uno_tg');}catch(e){}}
+  function nameOf(u){return u.username?'@'+u.username:([u.first_name,u.last_name].filter(Boolean).join(' ')||'Telegram user');}
+
+  function resetForm(){
+    b64='';file.value='';prev.hidden=true;prev.removeAttribute('src');dropText.hidden=false;
+    msg.value='';count.textContent='0 / 300';send.disabled=true;note.textContent='';
+  }
+  function toForm(){$('saName').textContent=nameOf(user);resetForm();show('form');}
+  function toLogin(text){show('login');$('saLoginNote').textContent=text||'';loadWidget();}
+
+  function open(from){
+    opener=from||document.activeElement;modal.hidden=false;document.documentElement.style.overflow='hidden';
+    user=stored();
+    if(user)toForm();else toLogin('');
+    setTimeout(function(){var x=modal.querySelector('.sa-x');if(x)x.focus();},30);
+  }
+  function close(){
+    modal.hidden=true;document.documentElement.style.overflow='';
+    if(opener&&opener.focus)try{opener.focus();}catch(e){}
+  }
+
+  /* Telegram Login Widget (needs the bot's domain set with @BotFather /setdomain) */
+  window.unoTgAuth=function(u){save(u);user=u;toForm();};
+  function loadWidget(){
+    if(widgetOn)return;
+    var box=$('saWidget'),ln=$('saLoginNote');
+    if(!API){ln.textContent='Sending from the site is not set up yet. Please post it in the Telegram group.';return;}
+    ln.textContent='Loading Telegram login…';
+    fetch(API+(API.indexOf('?')>-1?'&':'?')+'info=1').then(function(r){return r.json();}).then(function(d){
+      if(!d||!d.bot){ln.textContent='Telegram login is not ready yet. Please post it in the group for now.';return;}
+      widgetOn=true;ln.textContent='';
+      var s=document.createElement('script');s.async=true;s.src='https://telegram.org/js/telegram-widget.js?22';
+      s.setAttribute('data-telegram-login',d.bot);s.setAttribute('data-size','large');s.setAttribute('data-radius','0');
+      s.setAttribute('data-userpic','false');s.setAttribute('data-onauth','unoTgAuth(user)');
+      box.appendChild(s);
+    }).catch(function(){ln.textContent='Could not load Telegram login. Check your connection or post it in the group.';});
+  }
+
+  /* image: resize in the browser so the upload stays small */
+  function shrink(f){
+    return new Promise(function(res,rej){
+      var url=URL.createObjectURL(f),img=new Image();
+      img.onload=function(){
+        var max=1600,w=img.naturalWidth,h=img.naturalHeight,k=Math.min(1,max/Math.max(w,h));
+        var c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));
+        var x=c.getContext('2d');x.fillStyle='#000';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);
+        URL.revokeObjectURL(url);res(c.toDataURL('image/jpeg',0.86));
+      };
+      img.onerror=function(){URL.revokeObjectURL(url);rej(new Error('image'));};
+      img.src=url;
+    });
+  }
+  function pick(f){
+    note.textContent='';
+    if(!f)return;
+    if(!/^image\//.test(f.type)){note.textContent='Please choose an image file.';return;}
+    if(f.size>25*1024*1024){note.textContent='That image is too large. Choose one under 25 MB.';return;}
+    shrink(f).then(function(d){
+      b64=d.split(',')[1]||'';
+      if(b64.length>7000000){b64='';note.textContent='That image is too large even after resizing.';return;}
+      prev.src=d;prev.hidden=false;dropText.hidden=true;send.disabled=false;
+    }).catch(function(){note.textContent='That image could not be read. Try a JPG or PNG.';});
+  }
+  file.addEventListener('change',function(){pick(file.files&&file.files[0]);});
+  var drop=$('saDrop');
+  ['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('over');});});
+  ['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('over');});});
+  drop.addEventListener('drop',function(e){var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)pick(f);});
+  msg.addEventListener('input',function(){count.textContent=msg.value.length+' / 300';});
+
+  function fail(code){
+    busy=false;send.disabled=!b64;
+    if(code==='login'){save(null);user=null;toLogin('Your login expired. Please log in again.');return;}
+    if(code==='not_member'){show('notmember');return;}
+    note.textContent=
+      code==='slow_down'?'You sent art a moment ago. Please try again in about an hour.':
+      code==='bad_image'?'That image could not be used. Try a JPG or PNG.':
+      'Something went wrong. Please try again, or post it in the Telegram group.';
+  }
+  function submit(){
+    if(busy||!user||!b64)return;
+    busy=true;send.disabled=true;note.textContent='Sending…';
+    fetch(API,{method:'POST',body:JSON.stringify({auth:user,message:msg.value,image:b64})})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        busy=false;
+        if(d&&d.ok){
+          $('saDoneText').textContent=d.status==='show'
+            ?'It appears in the gallery within a couple of minutes and in the Telegram group, credited to you.'
+            :'It is waiting for a quick review. Once approved it appears here and in the Telegram group, credited to you.';
+          show('done');
+        }else fail(d&&d.error);
+      })
+      .catch(function(){fail('server');});
+  }
+  send.addEventListener('click',submit);
+  $('saRetry').addEventListener('click',function(){show('form');submit();});
+  $('saAgain').addEventListener('click',toForm);
+  $('saLogout').addEventListener('click',function(){save(null);user=null;toLogin('');});
+
+  document.addEventListener('click',function(e){
+    var t=e.target.closest&&e.target.closest('[data-send-art]');
+    if(t){e.preventDefault();open(t);return;}
+    if(e.target.closest&&e.target.closest('[data-sa-close]')&&!modal.hidden)close();
+  });
+  document.addEventListener('keydown',function(e){
+    if(modal.hidden)return;
+    if(e.key==='Escape'){close();return;}
+    if(e.key!=='Tab')return;
+    var f=[].slice.call(modal.querySelectorAll('button,a[href],textarea,input:not([type=file])')).filter(function(n){return !n.disabled&&n.offsetParent!==null;});
+    if(!f.length)return;
+    var first=f[0],last=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  });
+})();
+</script>
+<script>
+(function(){
+  var v=document.getElementById('howVideo');if(!v)return;
+  var frame=v.closest('.hv-frame'),btn=document.getElementById('hvPlay'),full=document.getElementById('hvFull');
+  var PLAY='<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
+  var PAUSE='<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var saver=!!(navigator.connection&&navigator.connection.saveData);
+  var userPaused=false,inView=false;
+  v.muted=true;
+  function ui(){
+    var p=v.paused;frame.classList.toggle('paused',p);
+    btn.innerHTML=p?PLAY:PAUSE;btn.setAttribute('aria-label',p?'Play video':'Pause video');
+  }
+  function go(){var pr=v.play();if(pr&&pr.catch)pr.catch(ui);}
+  btn.addEventListener('click',function(){if(v.paused){userPaused=false;go();}else{userPaused=true;v.pause();}});
+  v.addEventListener('click',function(){btn.click();});
+  v.addEventListener('play',ui);v.addEventListener('pause',ui);
+  full.addEventListener('click',function(){
+    if(frame.requestFullscreen)frame.requestFullscreen().catch(function(){});
+    else if(v.webkitEnterFullscreen)v.webkitEnterFullscreen();
+  });
+  // loads and plays only while the video is on screen, stops when it is not
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){
+      inView=es[0].isIntersecting;
+      if(inView){if(v.preload!=='auto')v.preload='auto';if(!userPaused&&!reduce&&!saver)go();}
+      else v.pause();
+    },{threshold:.35}).observe(frame);
+  }else if(!reduce&&!saver)go();
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden)v.pause();else if(inView&&!userPaused&&!reduce&&!saver)go();
+  });
+  ui();
+})();
+</script>
 </body>
 </html>
