@@ -629,6 +629,23 @@ html.brush-on iframe{cursor:auto!important}
 .hv-text li::marker{color:var(--gold);font-weight:800}
 @media(max-width:800px){.hv-cta .btn{width:100%;text-align:center;justify-content:center}}
 </style>
+<script>window.UNO_CURSOR='star'; /* 'star' = gold star with a red ring, 'brush' = paint brush with a red trail */</script>
+<style>/* star cursor: gold UNO star, red ring, star sparkles (desktop mouse only) */
+.sc-star,.sc-ring,.sc-ripple{position:fixed;left:0;top:0;pointer-events:none}
+.sc-ring{z-index:9998;width:38px;height:38px;border:1.5px solid rgba(242,29,43,.9);border-radius:50%;opacity:0;box-shadow:0 0 18px rgba(242,29,43,.35);transition:opacity .2s ease,scale .22s cubic-bezier(.2,.8,.2,1),background-color .22s ease,border-color .22s ease}
+.sc-star{z-index:9999;width:18px;height:18px;opacity:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.65));transition:opacity .15s ease,scale .18s ease}
+.sc-star svg{display:block;width:100%;height:100%}
+.sc-ring.hot{scale:1.55;background:rgba(242,29,43,.14);border-color:#f7bd4b}
+.sc-star.hot{scale:.8}
+.sc-ring.down{scale:.78}
+.sc-ring.hide,.sc-star.hide{opacity:0!important}
+.sc-spark{position:fixed;z-index:9997;margin:-6px 0 0 -6px;pointer-events:none;color:#f7bd4b;font-family:Arial,sans-serif;line-height:1;text-shadow:0 0 6px rgba(247,189,75,.7);animation:scSpark .85s ease-out forwards}
+@keyframes scSpark{0%{opacity:0;transform:translate(0,0) scale(.4) rotate(0)}15%{opacity:1}100%{opacity:0;transform:translate(var(--dx),-28px) scale(1) rotate(var(--r))}}
+.sc-ripple{z-index:9997;width:38px;height:38px;border-radius:50%;border:2px solid #f7bd4b;animation:scRip .55s ease-out forwards}
+@keyframes scRip{from{opacity:.9;transform:scale(.5)}to{opacity:0;transform:scale(2.4)}}
+html.star-on,html.star-on *{cursor:none!important}
+html.star-on iframe{cursor:auto!important}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#story">Skip to content</a>
@@ -814,7 +831,6 @@ html.brush-on iframe{cursor:auto!important}
       </div>
       <div class="hv-cta">
         <a class="btn primary" href="https://fomo.family/tokens/solana/45BgkY25kiHzjzVc4ztcpHDEF9ipf7rvZGySQwwPpump?r" target="_blank" rel="noopener noreferrer">Trade UNO on FOMO ↗</a>
-        <p>FOMO is a third-party app. Always match the contract address with the one on this page before you buy. Amounts shown in the video are examples.</p>
       </div>
       <details class="hv-text">
         <summary>Prefer text? Read the six steps</summary>
@@ -1205,6 +1221,7 @@ loadRemoteArt();
 <script>(function(){if(!("IntersectionObserver" in window))return;var els=[].slice.call(document.querySelectorAll("main section:not(.hero):not(.manifesto), main > div.wrap:not(.hero)"));els.forEach(function(e){e.classList.add("paint-in")});var io=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add("painted");io.unobserve(e.target)}})},{threshold:.15});els.forEach(function(e){io.observe(e)})})();</script>
 <script>
 (function(){
+  if(window.UNO_CURSOR!=='brush')return;
   if(!matchMedia('(hover:hover) and (pointer:fine)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   var root=document.documentElement;
   var brush=document.createElement('div');brush.className='brush-cursor';brush.setAttribute('aria-hidden','true');
@@ -1470,6 +1487,62 @@ loadRemoteArt();
     if(document.hidden)v.pause();else if(inView&&!userPaused&&!reduce&&!saver)go();
   });
   ui();
+})();
+</script>
+<script>
+(function(){
+  if(window.UNO_CURSOR!=='star')return;
+  if(!matchMedia('(hover:hover) and (pointer:fine)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var root=document.documentElement;
+  var star=document.createElement('div');star.className='sc-star';star.setAttribute('aria-hidden','true');
+  star.innerHTML='<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7L2 9.4l7.1-.6z" fill="#f7bd4b" stroke="#080808" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+  var ring=document.createElement('div');ring.className='sc-ring';ring.setAttribute('aria-hidden','true');
+  document.body.appendChild(ring);document.body.appendChild(star);
+  var x=-100,y=-100,rx=-100,ry=-100,shown=false,raf=0,acc=0,lx=0,ly=0,have=false,sparks=0;
+  function loop(){
+    rx+=(x-rx)*0.2;ry+=(y-ry)*0.2;
+    ring.style.translate=(rx-19)+'px '+(ry-19)+'px';
+    raf=(Math.abs(x-rx)>0.1||Math.abs(y-ry)>0.1)?requestAnimationFrame(loop):0;
+  }
+  function spark(px,py){
+    if(sparks>=22)return;sparks++;
+    var s=document.createElement('i');s.className='sc-spark';s.textContent='\u2605';
+    s.style.left=px+'px';s.style.top=py+'px';
+    s.style.fontSize=(7+Math.random()*7)+'px';
+    s.style.setProperty('--dx',(Math.random()*26-13)+'px');
+    s.style.setProperty('--r',(Math.random()*120-60)+'deg');
+    s.addEventListener('animationend',function(){s.remove();sparks--;});
+    document.body.appendChild(s);
+  }
+  function ripple(px,py){
+    var r=document.createElement('div');r.className='sc-ripple';
+    r.style.translate=(px-19)+'px '+(py-19)+'px';
+    r.addEventListener('animationend',function(){r.remove();});
+    document.body.appendChild(r);
+  }
+  addEventListener('pointermove',function(e){
+    if(e.pointerType&&e.pointerType!=='mouse')return;
+    x=e.clientX;y=e.clientY;var t=e.target;
+    if(!shown){shown=true;root.classList.add('star-on');rx=x;ry=y;star.style.opacity='1';ring.style.opacity='1';}
+    star.style.translate=(x-9)+'px '+(y-9)+'px';
+    var onFrame=!!(t&&t.tagName==='IFRAME');
+    star.classList.toggle('hide',onFrame);ring.classList.toggle('hide',onFrame);
+    var hot=!!(t&&t.closest&&t.closest('a,button,summary,label,[role=tab],.swatch,.frame'));
+    star.classList.toggle('hot',hot);ring.classList.toggle('hot',hot);
+    if(onFrame){have=false;}
+    else{
+      if(have){acc+=Math.hypot(x-lx,y-ly);if(acc>34){acc=0;spark(x,y);}}
+      lx=x;ly=y;have=true;
+    }
+    if(!raf)raf=requestAnimationFrame(loop);
+  },{passive:true});
+  addEventListener('pointerdown',function(e){
+    if(e.pointerType&&e.pointerType!=='mouse')return;
+    ring.classList.add('down');ripple(e.clientX,e.clientY);
+  },{passive:true});
+  addEventListener('pointerup',function(){ring.classList.remove('down');},{passive:true});
+  root.addEventListener('mouseleave',function(){star.classList.add('hide');ring.classList.add('hide');have=false;});
+  root.addEventListener('mouseenter',function(){star.classList.remove('hide');ring.classList.remove('hide');});
 })();
 </script>
 </body>
