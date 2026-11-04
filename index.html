@@ -664,6 +664,46 @@ html.star-on iframe{cursor:auto!important}
 @media(max-width:560px){.ca{font-size:13px;padding:14px}.ca span{margin-right:.5em}}
 .copy.is-copied{background:#fff;color:#111}
 </style>
+<style>/* gallery call to action */
+.gallery-head{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:end;margin-bottom:34px}
+.gh-pill{display:inline-flex;align-items:center;gap:9px;padding:6px 11px;border:1px solid rgba(247,189,75,.35);font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.gh-pill i{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:ghDot 1.8s ease-out infinite}
+@keyframes ghDot{0%{box-shadow:0 0 0 0 rgba(247,189,75,.6)}70%,100%{box-shadow:0 0 0 8px rgba(247,189,75,0)}}
+.gh-main h3{margin:16px 0 10px}
+.gh-main p{margin:0;max-width:440px}
+.gh-cta{display:grid;gap:16px;justify-items:start}
+.gh-steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.gh-steps li{display:flex;align-items:center;gap:12px;font-size:14px;line-height:1.4;color:#d7d2ca}
+.gh-steps b{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--gold);background:#161616;color:var(--gold);font-size:12px}
+.gh-btn{padding:19px 28px;font-size:13px;box-shadow:0 16px 40px -16px rgba(242,29,43,.7)}
+.gallery-head p.gh-alt{margin:0;font-size:12px;color:#a09a92}
+.gh-alt a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:800px){.gallery-head{grid-template-columns:1fr;gap:22px}.gh-btn{width:100%;justify-content:center}.gh-cta{justify-items:stretch}}
+
+.frame.empty{place-content:center;gap:12px;text-align:center}
+.frame.empty .plus{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;border:1px dashed rgba(247,189,75,.6);font-size:32px}
+.frame.empty .cta{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#c9c4bb}
+.frame.empty .tiny{left:14px;bottom:12px}
+.frame.next{border:1.5px solid var(--gold);background:radial-gradient(circle at 50% 38%,rgba(242,29,43,.24),#0f0f0f 72%);animation:frPulse 2.4s ease-out infinite}
+@keyframes frPulse{0%{box-shadow:0 0 0 0 rgba(247,189,75,.5)}70%,100%{box-shadow:0 0 0 16px rgba(247,189,75,0)}}
+.frame.next:hover{border-color:#fff}
+.frame.next .plus{width:84px;height:84px;border:0;background:var(--red);color:#fff;font-size:54px;box-shadow:0 12px 34px rgba(242,29,43,.5);animation:frFloat 2.4s ease-in-out infinite}
+@keyframes frFloat{50%{transform:translateY(-5px)}}
+.frame.next:hover .plus{animation:none;transform:rotate(90deg) scale(1.08);color:#fff}
+.frame.next .cta{font-size:13px;color:var(--gold)}
+.frame.next .sub{margin-top:-6px;font-size:11px;color:#a09a92}
+.frame .badge{position:absolute;left:12px;top:12px;padding:5px 9px;background:var(--gold);color:#111;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+@media(max-width:800px){.frame.next .plus{width:66px;height:66px;font-size:42px}.frame.empty .plus{width:44px;height:44px;font-size:26px}.frame.empty .cta{font-size:10px;letter-spacing:.1em}.frame.next .cta{font-size:11.5px}}
+
+.sa-float{display:none}
+@media(max-width:800px){
+  .sa-float{display:flex;align-items:center;gap:8px;position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:39;padding:14px 22px;border:0;background:var(--red);color:#fff;font:inherit;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;box-shadow:0 14px 40px rgba(242,29,43,.55);opacity:0;transform:translate(-50%,20px);pointer-events:none;transition:opacity .25s ease,transform .25s ease}
+  .sa-float span{font-size:20px;line-height:1;font-weight:400}
+  .sa-float.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+  #sendArt:not([hidden]) ~ .sa-float{display:none}
+}
+@media(prefers-reduced-motion:reduce){.frame.next,.frame.next .plus,.gh-pill i{animation:none}.sa-float{transition:none}}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#story">Skip to content</a>
@@ -780,17 +820,29 @@ html.star-on iframe{cursor:auto!important}
     </div>
     <div class="gallery" id="gallery">
       <div class="gallery-head">
-        <h3>Fill the next frame.</h3>
-        <p>The first frames belong to the paint. The rest are open. Log in with Telegram, send your UNO art and it shows up here, credited to you. You can also post it in our Telegram group with the tag #unoart.</p>
+        <div class="gh-main">
+          <span class="gh-pill"><i></i>Community gallery</span>
+          <h3>Fill the next frame.</h3>
+          <p>The first frames belong to the paint. The rest are yours.</p>
+        </div>
+        <div class="gh-cta">
+          <ol class="gh-steps">
+            <li><b>1</b>Log in with Telegram</li>
+            <li><b>2</b>Pick your image</li>
+            <li><b>3</b>It appears here, credited to you</li>
+          </ol>
+          <a class="btn primary gh-btn" id="ghBtn" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer"><svg class="tg-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Send your art</a>
+          <p class="gh-alt">Prefer Telegram? Post it in <a href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer">the group</a> with #unoart.</p>
+        </div>
       </div>
       <!-- To show a real piece, replace a frame's inner content with: <img src="your-image.jpg" alt="Short description"> -->
       <div class="frames">
-        <a class="frame" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 002"><span class="plus">+</span><span class="tiny">002 / Your art here</span></a>
-        <a class="frame" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 003"><span class="plus">+</span><span class="tiny">003 / Your art here</span></a>
-        <a class="frame" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 004"><span class="plus">+</span><span class="tiny">004 / Your art here</span></a>
-        <a class="frame" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 005"><span class="plus">+</span><span class="tiny">005 / Your art here</span></a>
+        <a class="frame empty next" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 004"><span class="badge">Your turn</span><span class="plus">+</span><span class="cta">Send your art</span><span class="sub">Takes about a minute</span></a>
+        <a class="frame empty" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 005"><span class="plus">+</span><span class="cta">Your art here</span></a>
+        <a class="frame empty" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 006"><span class="plus">+</span><span class="cta">Your art here</span></a>
+        <a class="frame empty" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer" aria-label="Send your art, frame 007"><span class="plus">+</span><span class="cta">Your art here</span></a>
       </div>
-      <div class="actions"><button class="btn secondary" id="moreArt" type="button" hidden>Show more</button><a class="btn primary tg" data-send-art href="https://t.me/unostartup" target="_blank" rel="noopener noreferrer"><svg class="tg-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M9.78 15.17l-.4 4.04c.58 0 .83-.25 1.13-.55l2.7-2.58 5.6 4.1c1.03.57 1.76.27 2.04-.95l3.7-17.3h0c.33-1.52-.55-2.12-1.55-1.75L1.3 9.5c-1.48.58-1.46 1.4-.26 1.77l5.55 1.73 12.9-8.14c.6-.4 1.16-.18.7.22"/></svg>Send your art</a></div>
+      <div class="actions"><button class="btn secondary" id="moreArt" type="button" hidden>Show earlier art</button></div>
     </div>
   </section>
 
@@ -1012,39 +1064,40 @@ const ART_PAGE=11,ART_CACHE_KEY='uno_art_v1';
 let artRaw=[],artList=[],artShown=ART_PAGE,artIndex=0,artOpener=null;
 function pad3(n){return String(n).padStart(3,'0');}
 function artImg(id,w){return 'https://drive.google.com/thumbnail?id='+id+'&sz=w'+w;}
-function emptyFrame(num){
-  const a=document.createElement('a');a.className='frame';a.href=ART_LINK;a.target='_blank';a.rel='noopener noreferrer';
+function emptyFrame(num,next){
+  const a=document.createElement('a');a.className='frame empty'+(next?' next':'');a.href=ART_LINK;a.target='_blank';a.rel='noopener noreferrer';
   a.setAttribute('aria-label','Send your art, frame '+pad3(num));a.setAttribute('data-send-art','');
-  const plus=document.createElement('span');plus.className='plus';plus.textContent='+';
-  const t=document.createElement('span');t.className='tiny';t.textContent=pad3(num)+' / Your art here';
-  a.append(plus,t);return a;
+  const mk=(tag,cls,text)=>{const e=document.createElement(tag);e.className=cls;e.textContent=text;return e;};
+  if(next)a.append(mk('span','badge','Your turn'));
+  a.append(mk('span','plus','+'),mk('span','cta',next?'Send your art':'Your art here'));
+  if(next)a.append(mk('span','sub','Takes about a minute'));
+  return a;
 }
 function renderGallery(list){
   artRaw=list||[];
   const L=artRaw.length,off=PIN.length;
   const pins=PIN.map((p,i)=>Object.assign({},p,{num:i+2}));
-  artList=pins.concat(artRaw.map((a,i)=>Object.assign({},a,{num:(a.n||(L-i+1))+off})));
+  const community=artRaw.map((a,i)=>Object.assign({},a,{num:(a.n||(L-i+1))+off})).sort((x,y)=>x.num-y.num);
+  artList=pins.concat(community);   // left to right: 002, 003, then the community art, oldest to newest
   drawGallery();
 }
 function drawGallery(){
   const box=document.querySelector('.frames');if(!box)return;
   box.textContent='';
   const L=artList.length;
-  const next=(L?Math.max.apply(null,artList.map(a=>a.num)):1)+1;
-  let en=next,placed=false;
-  const putEmpty=()=>{box.appendChild(emptyFrame(en++));};
-  const shown=artList.slice(0,artShown);
-  shown.forEach((a,i)=>{
-    if(!a.pinned&&!placed){putEmpty();placed=true;}
+  let en=(L?Math.max.apply(null,artList.map(a=>a.num)):1)+1;
+  box.appendChild(emptyFrame(en++,true));            // the "Send your art" frame always comes first
+  const start=Math.max(0,L-artShown);                // when the gallery grows, the newest art stays visible
+  artList.slice(start).forEach((a,k)=>{
+    const i=start+k;
     const b=document.createElement('button');b.type='button';b.className='frame art';
     b.setAttribute('aria-label','Open artwork '+pad3(a.num)+(a.title?': '+a.title:'')+(a.by?' by '+a.by:''));
     const img=document.createElement('img');img.src=a.src;img.alt=a.title||'UNO artwork';img.loading='lazy';
     const cap=document.createElement('span');cap.className='cap';cap.textContent=pad3(a.num)+(a.pinned?' / '+a.title:(a.by?' / '+a.by:''));
     b.append(img,cap);b.addEventListener('click',()=>openArt(i,b));box.appendChild(b);
   });
-  if(!placed){putEmpty();placed=true;}
-  while(box.children.length<4)putEmpty();
-  const more=document.getElementById('moreArt');if(more)more.hidden=L<=artShown;
+  while(box.children.length<4)box.appendChild(emptyFrame(en++,false));
+  const more=document.getElementById('moreArt');if(more)more.hidden=start<=0;
 }
 const moreBtn=document.getElementById('moreArt');
 if(moreBtn)moreBtn.addEventListener('click',()=>{artShown+=12;drawGallery();});
@@ -1341,6 +1394,7 @@ loadRemoteArt();
     </div>
   </div>
 </div>
+<button class="sa-float" id="saFloat" type="button" data-send-art aria-hidden="true" tabindex="-1"><span aria-hidden="true">+</span>Send your art</button>
 <script>
 (function(){
   var modal=document.getElementById('sendArt');if(!modal)return;
@@ -1563,6 +1617,19 @@ loadRemoteArt();
   addEventListener('pointerup',function(){ring.classList.remove('down');},{passive:true});
   root.addEventListener('mouseleave',function(){star.classList.add('hide');ring.classList.add('hide');have=false;});
   root.addEventListener('mouseenter',function(){star.classList.remove('hide');ring.classList.remove('hide');});
+})();
+</script>
+<script>
+(function(){
+  var f=document.getElementById('saFloat'),g=document.getElementById('gallery'),b=document.getElementById('ghBtn');
+  if(!f||!g||!b||!('IntersectionObserver' in window))return;
+  var gIn=false,bIn=false;
+  function upd(){
+    var on=gIn&&!bIn;
+    f.classList.toggle('show',on);f.setAttribute('aria-hidden',on?'false':'true');f.tabIndex=on?0:-1;
+  }
+  new IntersectionObserver(function(e){gIn=e[0].isIntersecting;upd();},{threshold:0}).observe(g);
+  new IntersectionObserver(function(e){bIn=e[0].isIntersecting;upd();},{threshold:0}).observe(b);
 })();
 </script>
 </body>
