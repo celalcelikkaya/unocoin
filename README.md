@@ -1,4 +1,4 @@
-# UNO – A new coat of internet
+# UNO: A new coat of internet
 
 <img src="assets/Uno.png" width="120" align="right" alt="UNO">
 
